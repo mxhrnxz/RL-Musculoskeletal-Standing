@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Generated training and evaluation artifacts
+logs/
+ep_logs/
+models/
+runs/
+*.csv
+*.tfevents.*
+
+# Generated MuJoCo debugging dumps / logs
+MJDATA.TXT
+MJMODEL.TXT
+MUJOCO_LOG.TXT
+
+# Local system/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

@@ -1,0 +1,15 @@
+# Dependencies inferred from imports. Versions are NOT verified/recovered.
+myosuite
+mujoco
+gymnasium
+stable-baselines3
+numpy
+pandas
+matplotlib
+seaborn
+pytest
+# Stable-Baselines3 progress bar:
+tqdm
+rich
+# Optional: inspect tensorboard logs if available
+tensorboard
