@@ -29,15 +29,24 @@ The main training script creates the `myoLegStandRandom` task with an initial st
 
 The `LongStandingRewardWrapper` in `trainPolicy5.py` reads pelvis height and motion, generalized joint velocities, and the control action. The **active** shaping expression is:
 
-$$
-r_{\mathrm{shape}} = h - \lVert v \rVert - \lVert \omega \rVert - \operatorname{mean}(\dot q^2) - 3\operatorname{mean}(a^2) + 4
-$$
+```python
+shaping_reward = (
+    pelvis_height
+    - pelvis_linear_speed
+    - pelvis_angular_speed
+    - mean_squared_generalized_velocity
+    - 3 * mean_squared_action
+    + 4
+)
+```
 
-Here, `h` is pelvis height, `v` and `ω` are pelvis linear and angular velocity, `q̇` is generalized velocity, and `a` is the action vector. The returned reward combines the shaping term (including any terminal penalty or bonus) with a small contribution from the original environment reward:
+Here, `pelvis_linear_speed` and `pelvis_angular_speed` are the magnitudes of the pelvis velocities, `mean_squared_generalized_velocity` averages the squared joint/generalized velocities, and `mean_squared_action` averages the squared control actions. The wrapper then applies a fall penalty or episode-completion bonus when applicable and adds a small contribution from the original environment reward:
 
-$$
-r = r_{\mathrm{shape}} + 0.0001\,r_{\mathrm{environment}}
-$$
+```python
+final_reward = shaping_reward + terminal_adjustment + 0.0001 * environment_reward
+```
+
+`terminal_adjustment` is `-100` on detected falls, `+250` when the 1,000-step horizon is reached without termination, and `0` otherwise.
 
 The wrapper **terminates** an episode when pelvis height falls below **0.70 m**, horizontal pelvis-to-target error exceeds **2.0 m**, or vertical error exceeds **0.40 m**. It applies a **−100** fall penalty and a **+250** bonus for reaching the 1,000-step horizon without termination. An uprightness termination criterion appears in the source but is disabled.
 
